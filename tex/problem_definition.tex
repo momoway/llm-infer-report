@@ -1,0 +1,19 @@
+\section{Introduction}
+
+\subsection{Motivation}
+
+The rapid adoption of Large Language Models (LLMs) in production environments has created unprecedented challenges in serving inference requests efficiently. Unlike traditional web services, LLM inference exhibits unique characteristics: highly variable request sizes (10 to 2000+ tokens), unpredictable output lengths, and complex two-phase execution patterns (prefill and decode). These characteristics make traditional queueing theory assumptions inadequate and necessitate specialized analysis.
+
+Real-world LLM serving systems like ChatGPT and Claude experience massive traffic spikes---often 10x increases during peak hours---while users expect sub-second latency for interactive applications. Production deployments using systems like vLLM \cite{kwon2023efficient} and SGLang \cite{zheng2024sglangefficientexecutionstructured} have demonstrated that batching strategies and scheduling policies dramatically impact both throughput and tail latency, yet the optimal configurations remain poorly understood.
+
+The economic stakes are substantial. GPU infrastructure represents the dominant operational cost for LLM services, and even a 10\% improvement in utilization translates to millions of dollars in savings for large-scale deployments. Furthermore, tail latency violations (p99 > 10s) directly degrade user experience and reduce engagement. Our simulation framework addresses this gap by providing rigorous, quantitative analysis of the fundamental tradeoffs between batching efficiency, scheduling fairness, and latency guarantees.
+
+\subsection{Problem Definition and Research Questions}
+
+Building upon our initial proposal, we have refined our focus to address three specific performance bottlenecks in LLM inference systems. Our simulation targets the complex interplay between batching strategies and scheduling policies, with the following research questions:
+
+\textbf{RQ1: Dynamic Batch Size Adaptation.} How should batch sizes be dynamically adjusted based on real-time queue lengths and arrival patterns? The key challenge is determining when the throughput gains from larger batches (improved GPU utilization) outweigh the increased queueing delays (head-of-line blocking). We hypothesize that optimal batch sizes are non-monotonic: too small wastes GPU capacity, while too large introduces excessive delays for short requests.
+
+\textbf{RQ2: Heterogeneous Request Handling.} With requests varying from 10 to 2000+ tokens in prompt length, how do different scheduling policies (FCFS, SJF, priority-based) handle this heterogeneity? Our focus is on minimizing p99 latency while maintaining high throughput and fairness. We investigate whether prioritizing short requests (SJF) causes unacceptable starvation for long requests, and whether aging mechanisms can restore fairness.
+
+\textbf{RQ3: Non-stationary Load Patterns.} Real-world systems experience time-varying loads---diurnal patterns with 10x spikes during peak hours. How do different batching strategies perform under these non-homogeneous Poisson arrivals with rates $\lambda(t)$ varying from 2 to 20 requests/second? We model whether adaptive batching (adjusting batch size based on queue length) outperforms static configurations, particularly during rapid load transitions.

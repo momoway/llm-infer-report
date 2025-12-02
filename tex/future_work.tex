@@ -1,0 +1,87 @@
+\section{Future Work and Timeline}
+
+\subsection{Remaining Work for Final Report}
+
+Between the draft report and final report deadline, we plan to complete the following tasks:
+
+\subsubsection{Comprehensive Experimental Evaluation}
+
+\textbf{Complete All Five Experiments:} We will execute the full experimental plan outlined in Section~\ref{sec:experiments} with 30 replications each for statistical rigor. This includes:
+\begin{itemize}
+\item Experiment 1: Full batch size sweep ($B \in \{1, 2, 4, 8, 16, 32, 64, 128\}$) with comprehensive metrics
+\item Experiment 2: Comparative evaluation of all four scheduling policies (FCFS, SJF, Predicted-SJF, Priority) on bimodal workloads
+\item Experiment 3: Load stress testing to identify saturation points and early warning indicators
+\item Experiment 4: Workload distribution sensitivity across Uniform, LogNormal, and PowerLaw distributions
+\item Experiment 5: Time-varying load patterns with static vs adaptive batch sizing strategies
+\end{itemize}
+
+\textbf{Statistical Analysis and Visualization:} For each experiment, we will generate publication-quality plots showing mean values with 95\% confidence intervals. We will conduct ANOVA tests to determine statistical significance of observed differences and perform sensitivity analysis to validate robustness of findings.
+
+\subsubsection{Model Refinement and Validation}
+
+\textbf{Empirical Validation:} We plan to collect empirical timing measurements from a real vLLM deployment to validate our timing model parameters ($\alpha, \beta, \gamma$). We will compare simulation predictions against actual system behavior to assess model fidelity and refine parameters if necessary.
+
+\textbf{Extended Timing Models:} We will explore more sophisticated timing models that capture batch size dependency in decode phase and potential memory bottlenecks at large batch sizes. This may involve piecewise linear models or empirically-fitted curves based on profiling data.
+
+\subsubsection{Advanced Scheduling Strategies}
+
+\textbf{Adaptive Batching Implementation:} We will implement and evaluate dynamic batch sizing algorithms that adjust based on queue length, arrival rate, and system utilization. Candidate algorithms include:
+\begin{itemize}
+\item Queue-length-based adaptation: $B(t) = B_{min} + k \cdot Q(t)$ where $Q(t)$ is current queue length
+\item Rate-based adaptation: Adjusting batch size based on recent arrival rate estimates
+\item Latency-feedback control: Using p99 latency measurements to tune batch size in closed-loop
+\end{itemize}
+
+\textbf{Hybrid Scheduling Policies:} We will design and test hybrid policies that combine benefits of FCFS (fairness) and SJF (efficiency). Candidates include SJF with aging, priority classes with round-robin, and weighted fair queueing adapted for LLM workloads.
+
+\subsubsection{Analysis and Interpretation}
+
+\textbf{Queueing Theory Analysis:} We will derive analytical approximations for key metrics (average latency, queue length) using queueing theory, treating the system as a G/G/1 queue with batch service. This will provide theoretical bounds and validate simulation results.
+
+\textbf{Practical Recommendations:} Based on experimental results, we will develop concrete configuration guidelines for production LLM serving systems, including decision trees for selecting batch size and scheduling policy based on workload characteristics and SLA requirements.
+
+\subsection{Timeline and Milestones}
+
+We propose the following timeline for completion:
+
+\textbf{Week 1 (Draft to Week 1 post-draft):}
+\begin{itemize}
+\item Complete Experiments 1-2 with full 30 replications
+\item Conduct empirical validation measurements on vLLM
+\item Generate initial plots and statistical analysis
+\end{itemize}
+
+\textbf{Week 2 (Week 2 post-draft):}
+\begin{itemize}
+\item Execute Experiments 3-4
+\item Implement adaptive batching algorithms
+\item Refine timing model parameters based on empirical data
+\end{itemize}
+
+\textbf{Week 3 (Final Week):}
+\begin{itemize}
+\item Complete Experiment 5 and hybrid scheduling policy evaluation
+\item Finalize all statistical analysis and visualizations
+\item Write discussion, conclusions, and practical recommendations
+\item Prepare final presentation video
+\end{itemize}
+
+\subsection{Expected Contributions}
+
+Upon completion, we expect to make the following contributions:
+
+\textbf{Quantitative Analysis of Batching Strategies:} Rigorous, statistically-validated measurements of how batch size impacts latency, throughput, and fairness across diverse workloads. This will provide the first comprehensive characterization of this critical design space for LLM serving.
+
+\textbf{Scheduling Policy Recommendations:} Evidence-based guidelines for selecting scheduling policies based on workload characteristics. We will quantify the fairness-efficiency tradeoff and identify conditions under which each policy is optimal.
+
+\textbf{Adaptive Batching Framework:} Design and evaluation of dynamic batch sizing algorithms that outperform static configurations for time-varying loads. If successful, this could directly improve production LLM serving systems.
+
+\textbf{Open-Source Simulation Framework:} Our simulation framework will be released as open-source software, enabling researchers and practitioners to reproduce our results, test new policies, and analyze their own workloads. The framework is modular, well-documented, and designed for extensibility.
+
+\subsection{Potential Challenges and Mitigation}
+
+\textbf{Computational Resources:} Running 30 replications of 5 experiments with 10,000 requests each requires significant compute time. We estimate 50-100 CPU-hours total. Mitigation: We will parallelize experiments across multiple machines and optimize simulation code for performance.
+
+\textbf{Statistical Significance:} Some effects may be small and require careful statistical analysis to detect. Mitigation: We use 30 replications (sufficient for central limit theorem) and will increase to 50 if initial results show high variance.
+
+\textbf{Model Validity:} Our simplified timing model may not capture all real-world effects. Mitigation: We will validate against empirical measurements and clearly document assumptions and limitations in the final report.
